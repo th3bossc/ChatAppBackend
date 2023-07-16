@@ -10,6 +10,9 @@
   },
   "author": "Th3BossC",
   "license": "ISC",
+  "engines": {
+    "node" : ">=16.13"
+  },
   "dependencies": {
     "@prisma/client": "^5.0.0",
     "bcrypt": "^5.1.0",
