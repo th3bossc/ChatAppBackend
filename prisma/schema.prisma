@@ -6,32 +6,34 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id       String    @id @default(uuid())
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
   username String    @unique
   password String
   messages Message[]
-  rooms    Room[]
+  rooms    Room[]    @relation(fields: [roomsIds], references: [id])
+  roomsIds String[]  @db.ObjectId
   online   Boolean   @default(false)
 }
 
 model Message {
-  id       Int      @id @default(autoincrement())
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   sender   User     @relation(fields: [senderId], references: [id])
-  senderId String
+  senderId String   @db.ObjectId
   content  String
   time     DateTime @default(now())
   room     Room?    @relation(fields: [roomId], references: [id])
-  roomId   String?
+  roomId   String?  @db.ObjectId
 }
 
 model Room {
-  id       String    @id @default(uuid())
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
   name     String    @unique
+  usersIds String[]  @db.ObjectId
+  users    User[]    @relation(fields: [usersIds], references: [id])
   messages Message[]
-  users    User[]
 }
