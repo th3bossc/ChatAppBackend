@@ -67,8 +67,18 @@ io.on('connection', (socket) => {
                     connect : {id : socket.currentRoom},
                 }
             },
+            select : {
+                time : true,
+                content : true,
+                sender : {
+                    select : {
+                        online : true,
+                        username : true,
+                    }
+                }
+            }
         });
-        io.to(socket.currentRoom).emit('incoming-message');
+        io.to(socket.currentRoom).emit('incoming-message', newMessage);
     });
     socket.on('delete-room', async () => {
         const currentRoom = await prisma.room.findUnique({ where : { id : socket.currentRoom } });
