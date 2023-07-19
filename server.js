@@ -83,9 +83,9 @@ io.on('connection', (socket) => {
     socket.on('delete-room', async () => {
         const currentRoom = await prisma.room.findUnique({ where : { id : socket.currentRoom } });
         if (currentRoom) {
+            await prisma.room.delete({ where : { id : socket.currentRoom } });
             io.to(socket.currentRoom).emit('current-room-deleted');
             io.socketsLeave(currentRoom.id);
-            await prisma.room.delete({ where : { id : socket.currentRoom } });
         }
     });
     socket.on('disconnect', async () => {
