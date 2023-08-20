@@ -3,7 +3,7 @@ const errorHandler = require('./middlewares/errorHandler');
 const dotenv = require('dotenv').config();
 const cors = require('cors');
 const app = express();
-
+const logger = require('./middlewares/logger');
 const server = require('http').Server(app);
 const userRoute = require('./routes/userRoutes');
 const roomRoute = require('./routes/roomRoutes');
@@ -15,6 +15,7 @@ const prisma = new prismaClient.PrismaClient();
 
 
 app.use(cors({origin : '*'}));
+app.use(logger);
 app.use(express.json());
 app.use('/user', userRoute);
 app.use('/room', roomRoute);
@@ -101,7 +102,7 @@ io.on('connection', (socket) => {
             });
         }
 
-    })
+    });
 })
 
 const PORT = process.env.PORT || 5001;

@@ -3,6 +3,7 @@ const prismaClient = require('@prisma/client');
 const prisma = new prismaClient.PrismaClient();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { randomUUID } = require('crypto');
 
 
 const registerHandler = expressAsyncHandler(async (req, res) => {
@@ -65,6 +66,23 @@ const loginHandler = expressAsyncHandler(async (req, res) => {
         throw new Error('Username or Password not valid');
     }
 });
+
+const guestHandler = expressAsyncHandler(async (req, res) => {
+    const id = randomUUID();
+    const username = `Guest${id}`;
+    const accessToken = jwt.sign(
+        {
+            guest : {
+                username,
+                id,
+            },
+        },
+        process.env.ACCESS_TOKEN_SECRET,
+        { expiresIn : "1d" }
+    );
+    res.status(200).json(accessToken);
+})
+
 
 const currentHandler = expressAsyncHandler(async (req, res) => {
     res.status(200).json({username : req.user.username});
