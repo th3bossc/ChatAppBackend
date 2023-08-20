@@ -42,7 +42,9 @@ const loginHandler = expressAsyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('all fields mandatory');
     }
+    console.log('access user started');
     const user = await prisma.user.findUnique({ where : { username } });
+    console.log('access user ended');
     if (!user) {
         res.status(400);
         throw new Error("User doesn't exist");
